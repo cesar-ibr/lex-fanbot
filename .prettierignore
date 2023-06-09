@@ -1,0 +1,11 @@
+# Directories
+node_modules
+.vscode
+dist
+styles
+public
+assets
+
+# Files
+*.config.*
+*.json
