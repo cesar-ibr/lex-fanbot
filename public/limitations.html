@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lex Fridman Fanbot | Limitations</title>
+  <style>
+    html,
+    body {
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      height: 100vh;
+      background-color: #111;
+      color: #FFF;
+      padding: 15px;
+    }
+    ul {
+      padding-inline-start: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Lex Fanbot Limitations</h1>
+  <p>
+    The fanbot has access to all transcripts available of the podcast.
+    However there are some episodes for which the list of transcripts are not available.
+    This means that the Fanbot (at the moment) is not capable of searching and creating a response for questions
+    regarding these episodes.
+  </p>
+  <h3>No Memory</h3>
+  <p>
+    Due to the high volume of requests this tool receives and to avoid crashes the system does not keeps
+    track of the full conversation history. In technical terms this means that every question you ask 
+    will be treated as the first one without including previous requests in the context. I hope to implement
+    chat context in the near future.
+  </p>
+  <h3>Results</h3>
+  <p>
+    In order to serve to a big number of users the requests about episode's information is limited to 10 results.
+    This means that the Fanbot will have access to at most 10 records for each question you ask. This will prevent
+    a Fanbot's information overflow 😵‍💫.
+  </p>
+  <h3>Missing Episodes</h3>
+  <ul>
+    <li>Ep #298 <a href="https://lexfridman.com/susan-cain">https://lexfridman.com/susan-cain</a> </li>
+    <li>Ep #275 <a href="https://lexfridman.com/rick-rubin">https://lexfridman.com/rick-rubin</a> </li>
+    <li>EP #248 <a href="https://lexfridman.com/norman-naimark">https://lexfridman.com/norman-naimark</a></li>
+    <li>EP #206 <a href="https://lexfridman.com/ishan-misra">https://lexfridman.com/ishan-misra</a></li>
+    <li>Ep #192 <a href="https://lexfridman.com/charles-hoskinson">https://lexfridman.com/charles-hoskinson</a></li>
+    <li>Ep #178 <a href="https://lexfridman.com/michael-malice-and-yaron-brook">https://lexfridman.com/michael-malice-and-yaron-brook</a></li>
+    <li>Ep #176 <a href="https://lexfridman.com/robert-breedlove">https://lexfridman.com/robert-breedlove</a></li>
+    <li>Ep #141 <a href="https://lexfridman.com/erik-brynjolfsson">https://lexfridman.com/erik-brynjolfsson</a></li>
+    <li>Ep #140 <a href="https://lexfridman.com/lisa-feldman-barrett-2">https://lexfridman.com/lisa-feldman-barrett-2</a></li>
+    <li>Ep #139 <a href="https://lexfridman.com/andrew-huberman">https://lexfridman.com/andrew-huberman</a></li>
+    <li>Ep #138 <a href="https://lexfridman.com/yaron-brook">https://lexfridman.com/yaron-brook</a></li>
+    <li>Ep #137 <a href="https://lexfridman.com/alex-filippenko">https://lexfridman.com/alex-filippenko</a></li>
+    <li>Ep #135 <a href="https://lexfridman.com/charles-isbell">https://lexfridman.com/charles-isbell</a></li>
+    <li>Ep #131 <a href="https://lexfridman.com/manolis-kellis-3">https://lexfridman.com/manolis-kellis-3</a></li>
+    <li>Ep #124 <a href="https://lexfridman.com/stephen-wolfram-2">https://lexfridman.com/stephen-wolfram-2</a></li>
+    <li>Ep #103 <a href="https://lexfridman.com/ben-goertzel">https://lexfridman.com/ben-goertzel</a></li>
+    <li>Ep #43 <a href="https://lexfridman.com/gary-marcus">https://lexfridman.com/gary-marcus</a></li>
+    <li>Ep #23 <a href="https://lexfridman.com/gavin-miller">https://lexfridman.com/gavin-miller</a></li>
+  </ul>
+</body>
+
+</html>

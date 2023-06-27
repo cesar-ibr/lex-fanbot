@@ -10,8 +10,11 @@
     "format": "yarn prettier --write .",
     "functions:new": "supabase functions new",
     "functions:deploy": "supabase functions deploy",
-    "update-types": "supabase gen types typescript --project-id \"$SB_PROJECT_ID\" > ./src/api/types.ts",
-    "secrets:push": "supabase secrets set --env-file ./supabase/.env"
+    "functions:classification": "deno run --allow-net --allow-env ./supabase/functions/classification/index.ts",
+    "functions:search": "deno run --allow-net --allow-env ./supabase/functions/semantic-search/index.ts",
+    "functions:query": "deno run --allow-net --allow-env ./supabase/functions/query-podcast/index.ts",
+    "update-types": "supabase gen types typescript --project-id \"$SUPABASE_PID\" > ./supabase/db-types.ts",
+    "secrets:push": "supabase secrets set --env-file .env"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.24.0",
