@@ -1,7 +1,9 @@
-# Vue 3 + Vite
+<div style="text-align: center">
+  <img src="https://lexfanbot.io/fanbot.png" width="300"/>
+  <h3> The Lex Fanbot </h3>
+</div>
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+### About
+The Lex Fanbot is a chat assistant created to respond questions about The Lex Fridman Podcast.
+It searches through data about the episodes and their captions to produce a semantic search.
+You can try it [here](https://lexfanbot.io) and chek the [about page](https://lexfanbot.io/about.html) for more information.

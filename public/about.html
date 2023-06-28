@@ -14,9 +14,11 @@
       color: #FFF;
       padding: 15px;
     }
+
     ul {
       padding-inline-start: 15px;
     }
+
     a {
       color: #28803d;
     }
@@ -34,7 +36,7 @@
   <h4>No Memory</h4>
   <p>
     Due to the high volume of requests this tool receives and to avoid crashes the system does not keeps
-    track of the full conversation history. In technical terms this means that every question you ask 
+    track of the full conversation history. In technical terms this means that every question you ask
     will be treated as the first one without including previous requests in the context. I hope to implement
     chat context in the near future.
   </p>
@@ -51,10 +53,13 @@
     <li>EP #248 <a href="https://lexfridman.com/norman-naimark">https://lexfridman.com/norman-naimark</a></li>
     <li>EP #206 <a href="https://lexfridman.com/ishan-misra">https://lexfridman.com/ishan-misra</a></li>
     <li>Ep #192 <a href="https://lexfridman.com/charles-hoskinson">https://lexfridman.com/charles-hoskinson</a></li>
-    <li>Ep #178 <a href="https://lexfridman.com/michael-malice-and-yaron-brook">https://lexfridman.com/michael-malice-and-yaron-brook</a></li>
+    <li>Ep #178 <a
+        href="https://lexfridman.com/michael-malice-and-yaron-brook">https://lexfridman.com/michael-malice-and-yaron-brook</a>
+    </li>
     <li>Ep #176 <a href="https://lexfridman.com/robert-breedlove">https://lexfridman.com/robert-breedlove</a></li>
     <li>Ep #141 <a href="https://lexfridman.com/erik-brynjolfsson">https://lexfridman.com/erik-brynjolfsson</a></li>
-    <li>Ep #140 <a href="https://lexfridman.com/lisa-feldman-barrett-2">https://lexfridman.com/lisa-feldman-barrett-2</a></li>
+    <li>Ep #140 <a
+        href="https://lexfridman.com/lisa-feldman-barrett-2">https://lexfridman.com/lisa-feldman-barrett-2</a></li>
     <li>Ep #139 <a href="https://lexfridman.com/andrew-huberman">https://lexfridman.com/andrew-huberman</a></li>
     <li>Ep #138 <a href="https://lexfridman.com/yaron-brook">https://lexfridman.com/yaron-brook</a></li>
     <li>Ep #137 <a href="https://lexfridman.com/alex-filippenko">https://lexfridman.com/alex-filippenko</a></li>
@@ -71,19 +76,27 @@
     Try to rephrase your question to include words "episode", "guest" or "podcast".
   </p>
   <p>
-    Instead of asking "What's the meaning of life?" try "Tell me episodes where they discussed the meaning of life" or "Recommdend episodes about life".
+    Instead of asking "What's the meaning of life?" try "Tell me episodes where they discussed the meaning of life" or
+    "Recommdend episodes about life".
   </p>
   <hr>
   <h1>About the project</h1>
   <p>
-    This is an open source initiative that I started by my own because I'm a big fan of the podcast.
+    This is an <a href="https://github.com/cesar-ibr/lex-fanbot">Open Source initiative</a>
+    that I started by my own because I'm a big fan of the podcast.
     I don't work for the Lex Fridman Podcast and this runs with personal resources.
-    If you find a bug or problem let me know by opening an issue in the project.
+    If you find a bug or problem let me know by
+    <a href="https://github.com/cesar-ibr/lex-fanbot/issues">opening an issue</a>
+    in the project.
   </p>
   <h1>Data Analytics</h1>
   <p>
     Google Analytics is in place just to know how people use the fanbot.
-    Additionaly you can see that I store the prompts sent with the intention to improve the classification
+    Additionaly you can see that
+    <a
+      href="https://github.com/cesar-ibr/lex-fanbot/blob/c631ddea94ea187efb441a6d293ef5848c50aec1/supabase/functions/classification/index.ts#L52">
+      prompts get stored
+    </a> with the intention to improve the classification
     of the queries and make the fanbot smarter.
   </p>
 </body>

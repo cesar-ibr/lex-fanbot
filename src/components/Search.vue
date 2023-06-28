@@ -74,11 +74,6 @@ const onCompletion = (data: CompletionResponse) => {
 };
 
 const startCompletionStream = async (query = '', url = '') => {
-  // const completionParagraph: CompletionBoxItem = {
-  //   type: 'completion',
-  //   content: '',
-  // };
-  // completionBoxItems.value.push(completionParagraph);
   // Open stream
   try {
     await fetchChatCompletion({
