@@ -10,9 +10,9 @@
     "format": "yarn prettier --write .",
     "functions:new": "supabase functions new",
     "functions:deploy": "supabase functions deploy",
-    "functions:classification": "deno run --allow-net --allow-env ./supabase/functions/classification/index.ts",
-    "functions:search": "deno run --allow-net --allow-env ./supabase/functions/semantic-search/index.ts",
-    "functions:query": "deno run --allow-net --allow-env ./supabase/functions/query-podcast/index.ts",
+    "functions:classification": "deno run --allow-net --allow-env ./supabase/functions/classification/index.ts --port=3000",
+    "functions:query": "deno run --allow-net --allow-env ./supabase/functions/query-podcast/index.ts --port=3001",
+    "functions:search": "deno run --allow-net --allow-env ./supabase/functions/semantic-search/index.ts --port=3002",
     "update-types": "supabase gen types typescript --project-id \"$SUPABASE_PID\" > ./supabase/db-types.ts",
     "secrets:push": "supabase secrets set --env-file .env"
   },

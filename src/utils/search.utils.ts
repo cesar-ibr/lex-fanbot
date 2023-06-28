@@ -12,9 +12,7 @@ export interface CompletionResponse {
 
 export enum PromptClassifications {
   PODCAST_INFO = 'PODCAST_INFO',
-  EPISODE_STATISTICS = 'EPISODE_STATISTICS',
-  GUEST_INFO = 'GUEST_INFO',
-  OPINION = 'OPINION',
+  CONTENT_SEARCH = 'CONTENT_SEARCH',
   NON_PODCAST_RELATED = 'NON-PODCAST_RELATED',
 }
 
@@ -36,6 +34,9 @@ export const getPromptClassification = async (query = '') => {
     method: 'POST',
     body: JSON.stringify({ query }),
   });
+  if (res.status !== 200) {
+    throw new Error(`Error with request [CODE] ${res.status}`)
+  }
   const { classification } = await res.json();
   return classification;
 };
@@ -48,12 +49,12 @@ export const fetchChatCompletion = async ({ url, query, onCompletion }: FetchCom
     method: 'POST',
     body: JSON.stringify({ query }),
   });
+  if (response.status !== 200) {
+    throw new Error(`Error with request [CODE] ${response.status}`)
+  }
   // Check reader
   const reader = response.body?.getReader();
   if (!reader) {
-    alert(
-      'There is a problem connecting with the server at the moment. Try again later.'
-    );
     throw new Error('No streamable response');
   }
   // Handle each message until streaming is closed
@@ -90,7 +91,7 @@ export const fakeStream = async (onCompletion: OnCompeltionFn) => {
       onCompletion({
         choices: [{
           delta: {
-            content: tokens[i]
+            content: `${tokens[i]} `
           }
         }]
       });

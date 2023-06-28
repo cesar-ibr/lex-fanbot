@@ -17,31 +17,34 @@
     ul {
       padding-inline-start: 15px;
     }
+    a {
+      color: #28803d;
+    }
   </style>
 </head>
 
 <body>
-  <h1>Lex Fanbot Limitations</h1>
+  <h1 id="Limitations">Lex Fanbot Limitations</h1>
   <p>
     The fanbot has access to all transcripts available of the podcast.
     However there are some episodes for which the list of transcripts are not available.
     This means that the Fanbot (at the moment) is not capable of searching and creating a response for questions
     regarding these episodes.
   </p>
-  <h3>No Memory</h3>
+  <h4>No Memory</h4>
   <p>
     Due to the high volume of requests this tool receives and to avoid crashes the system does not keeps
     track of the full conversation history. In technical terms this means that every question you ask 
     will be treated as the first one without including previous requests in the context. I hope to implement
     chat context in the near future.
   </p>
-  <h3>Results</h3>
+  <h4>Results</h4>
   <p>
     In order to serve to a big number of users the requests about episode's information is limited to 10 results.
     This means that the Fanbot will have access to at most 10 records for each question you ask. This will prevent
     a Fanbot's information overflow 😵‍💫.
   </p>
-  <h3>Missing Episodes</h3>
+  <h4>Missing Episodes</h4>
   <ul>
     <li>Ep #298 <a href="https://lexfridman.com/susan-cain">https://lexfridman.com/susan-cain</a> </li>
     <li>Ep #275 <a href="https://lexfridman.com/rick-rubin">https://lexfridman.com/rick-rubin</a> </li>
@@ -62,6 +65,27 @@
     <li>Ep #43 <a href="https://lexfridman.com/gary-marcus">https://lexfridman.com/gary-marcus</a></li>
     <li>Ep #23 <a href="https://lexfridman.com/gavin-miller">https://lexfridman.com/gavin-miller</a></li>
   </ul>
+  <h4>You get "Sorry, I can't help with that" too often</h4>
+  <p>
+    The assistant is instructed to only answer questions about the podcast.
+    Try to rephrase your question to include words "episode", "guest" or "podcast".
+  </p>
+  <p>
+    Instead of asking "What's the meaning of life?" try "Tell me episodes where they discussed the meaning of life" or "Recommdend episodes about life".
+  </p>
+  <hr>
+  <h1>About the project</h1>
+  <p>
+    This is an open source initiative that I started by my own because I'm a big fan of the podcast.
+    I don't work for the Lex Fridman Podcast and this runs with personal resources.
+    If you find a bug or problem let me know by opening an issue in the project.
+  </p>
+  <h1>Data Analytics</h1>
+  <p>
+    Google Analytics is in place just to know how people use the fanbot.
+    Additionaly you can see that I store the prompts sent with the intention to improve the classification
+    of the queries and make the fanbot smarter.
+  </p>
 </body>
 
 </html>

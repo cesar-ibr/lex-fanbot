@@ -16,15 +16,28 @@ type CompletionBoxItem = {
 };
 
 const input = ref('');
+const completionBoxContainer = ref<HTMLDivElement | null>(null);
 const showLoading = ref(false);
 const completionInProgress = ref(false);
-const completionBox = ref<CompletionBoxItem[]>([]);
+const completionBoxItems = ref<CompletionBoxItem[]>([]);
 const completionPlaceholder = ref('');
 const youtubeLinks = ref<string[]>([]);
+const errorMsg =
+  'Apologies, there was a problem with your request. Please try again later.';
 
 const validInput = (text = '') => {
   // TODO: validate characters
   return text.trim() !== '';
+};
+
+const scrollDown = () => {
+  const container = completionBoxContainer.value;
+  if (!container) {
+    return;
+  }
+  if (container.scrollHeight > container.offsetHeight) {
+    container.scroll({ behavior: 'instant', top: container.scrollHeight });
+  }
 };
 
 const preCompletion = (query = '') => {
@@ -32,8 +45,18 @@ const preCompletion = (query = '') => {
   completionInProgress.value = true;
   showLoading.value = true;
   youtubeLinks.value = [];
-  completionBox.value.push({ type: 'title', content: query });
-}
+  completionBoxItems.value.push({ type: 'title', content: query });
+  scrollDown();
+};
+
+const postCompletion = () => {
+  completionInProgress.value = false;
+  showLoading.value = false;
+};
+
+const appendItem = (item: CompletionBoxItem) => {
+  completionBoxItems.value.push(item);
+};
 
 const onCompletion = (data: CompletionResponse) => {
   if (showLoading.value) {
@@ -42,6 +65,7 @@ const onCompletion = (data: CompletionResponse) => {
   if (data.choices) {
     const { content = '' } = data.choices[0].delta;
     completionPlaceholder.value += content;
+    scrollDown();
     return;
   }
   if (data.youtubeLinks) {
@@ -50,26 +74,32 @@ const onCompletion = (data: CompletionResponse) => {
 };
 
 const startCompletionStream = async (query = '', url = '') => {
-  const completionParagraph: CompletionBoxItem = {
-    type: 'completion',
-    content: '',
-  };
-  completionBox.value.push(completionParagraph);
+  // const completionParagraph: CompletionBoxItem = {
+  //   type: 'completion',
+  //   content: '',
+  // };
+  // completionBoxItems.value.push(completionParagraph);
   // Open stream
-  await fetchChatCompletion({
-    url,
-    query,
-    onCompletion, // Appends the stream in `completionPlaceholder`
-  });
+  try {
+    await fetchChatCompletion({
+      url,
+      query,
+      onCompletion, // Appends the stream in `completionPlaceholder`
+    });
+  } catch (error) {
+    appendItem({ type: 'completion', content: errorMsg });
+    postCompletion();
+    return;
+  }
   // Clean up placeholder
-  completionBox.value.push({
+  appendItem({
     type: 'completion',
     content: completionPlaceholder.value,
   });
   completionPlaceholder.value = '';
   // Add Video links
   if (youtubeLinks.value.length) {
-    completionBox.value.push({
+    appendItem({
       type: 'episodes',
       content: youtubeLinks.value,
     });
@@ -78,30 +108,37 @@ const startCompletionStream = async (query = '', url = '') => {
 
 const getChatCompletions = async () => {
   const query = `${input.value}`;
+  let promptCategory = '';
+
   if (!validInput(query)) {
     return;
   }
-  //Prepare placeholder and flags
-  preCompletion(query);
+  preCompletion(query); //Prepare placeholder and flags
 
-  const promptCase = await getPromptClassification(query);
-  console.log('[Classification] => ', promptCase);
-  showLoading.value = false;
+  try {
+    promptCategory = await getPromptClassification(query);
+  } catch (error) {
+    appendItem({ type: 'completion', content: errorMsg });
+    postCompletion();
+    return;
+  }
 
-  switch (promptCase) {
-    case PromptClassifications.NON_PODCAST_RELATED:
-      completionBox.value.push({
-        type: 'completion',
-        content: `Sorry but I can't help with that 😬`,
-      });
+  switch (promptCategory) {
+    case PromptClassifications.PODCAST_INFO:
+      await startCompletionStream(query, QUERY_ENDPOINT);
       break;
-    case PromptClassifications.OPINION:
+    case PromptClassifications.CONTENT_SEARCH:
       await startCompletionStream(query, SS_ENDPOINT);
       break;
+    case PromptClassifications.NON_PODCAST_RELATED:
     default:
-      await startCompletionStream(query, QUERY_ENDPOINT);
+      appendItem({
+        type: 'completion',
+        content: `Sorry, I can't help with that 😬`,
+      });
   }
-  completionInProgress.value = false;
+  postCompletion();
+  scrollDown();
 };
 
 const quickQuestion = async (question = '', method = '') => {
@@ -111,12 +148,16 @@ const quickQuestion = async (question = '', method = '') => {
   } else {
     await startCompletionStream(question, QUERY_ENDPOINT);
   }
+  postCompletion();
+  scrollDown();
 };
 </script>
 
 <template>
   <div class="pt-4 px-12 pb-20 max-w-screen-md m-auto h-screen relative">
-    <div class="completion-container overflow-y-scroll text-white">
+    <div
+      ref="completionBoxContainer"
+      class="completion-container overflow-y-scroll text-white">
       <!-- About -->
       <div class="about">
         <img
@@ -138,55 +179,59 @@ const quickQuestion = async (question = '', method = '') => {
           Review the
           <a
             target="_blank"
-            href="/limitations.html"
+            href="/about.html#limitations"
             class="underline text-blue-400"
-            >limitations</a
+            >limitations section</a
           >
           in case you don't get the answer you expect from the fanbot.
         </p>
       </div>
       <!-- Completion Box -->
       <div class="completion-box">
-        <template v-for="item in completionBox">
-          <h3 v-if="item.type === 'title'" class="text-blue-400 text-lg mt-4">
+        <template v-for="item in completionBoxItems">
+          <h3
+            v-if="item.type === 'title'"
+            class="text-blue-400 text-lg mt-4 capitalize">
             {{ item.content }}
           </h3>
           <p v-if="item.type === 'completion'" class="text-white">
             {{ item.content }}
           </p>
           <div v-if="item.type === 'episodes'">
-            <p class="mt-4 text-lg text-green-600">Check these episodes</p>
+            <p class="mt-4 text-sm text-green-600 capitalize">
+              YouTube Episodes
+            </p>
             <template v-for="link in item.content">
               <a
                 :href="link"
                 target="_blank"
-                class="text-yellow-500 underline underline-offset-4 block pl-4"
+                class="text-yellow-500 text-sm underline underline-offset-4 block pl-4"
                 >{{ link }}</a
               >
             </template>
           </div>
         </template>
-        <TextSkeleton v-show="showLoading" />
         <p class="text-white">{{ completionPlaceholder }}</p>
+        <TextSkeleton v-show="showLoading" />
       </div>
     </div>
     <!-- SEARCH BOX -->
     <div
-      class="search-bar p-2 rounded-md flex items-center bg-green-700 bottom-[30vh] md:bottom-[45vh]"
-      :class="{ bottom: completionBox.length }">
+      class="search-bar p-2 rounded-md flex items-center bg-green-700 bottom-[30vh]"
+      :class="{ bottom: completionBoxItems.length }">
       <input
         class="px-2 w-full bg-transparent outline-none text-white text-lg"
         type="text"
         v-model="input"
-        :disabled="completionInProgress || !validInput(input)"
+        :disabled="completionInProgress"
         @keyup.enter="getChatCompletions"
         autofocus
-        max="250"
+        :max="250"
         placeholder="Ask Lex Fanbot something..." />
       <button
         class="text-gray-300 transition ease-in-out duration-150 hover:-translate-y-1 hover:text-white hover:-rotate-45"
         @click="getChatCompletions"
-        :disabled="completionInProgress || !validInput(input)">
+        :disabled="completionInProgress">
         <svg
           width="24px"
           height="24px"

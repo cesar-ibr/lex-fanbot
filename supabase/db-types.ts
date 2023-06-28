@@ -3,7 +3,7 @@ export type Json =
   | number
   | boolean
   | null
-  | { [key: string]: Json }
+  | { [key: string]: Json | undefined }
   | Json[]
 
 export interface Database {
@@ -102,6 +102,27 @@ export interface Database {
         }
         Relationships: []
       }
+      query_logs: {
+        Row: {
+          classification: string | null
+          created_at: string | null
+          id: number
+          prompt: string | null
+        }
+        Insert: {
+          classification?: string | null
+          created_at?: string | null
+          id?: number
+          prompt?: string | null
+        }
+        Update: {
+          classification?: string | null
+          created_at?: string | null
+          id?: number
+          prompt?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -125,7 +146,7 @@ export interface Database {
       }
       match_captions: {
         Args: {
-          query_embedding: number[]
+          query_embedding: string
           match_threshold: number
           match_count: number
         }

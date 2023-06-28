@@ -1,16 +1,26 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'https://esm.sh/openai@3.3.0';
 import GPT3Tokenizer from 'https://esm.sh/gpt3-tokenizer@1.1.5';
-import { corsHeaders, semanticSearchInstructions, response, streamHeaders, fetchChatCompletion } from '../_shared/utils.ts';
+import { corsHeaders, semanticSearchInstructions, response, streamHeaders, fetchChatCompletion, validOrigin } from '../_shared/utils.ts';
 import { zipReadableStreams } from 'https://deno.land/std@0.192.0/streams/mod.ts';
 import { supabaseClient } from '../_shared/supabase-client.ts';
+
+const [, portNum] = (Deno.args[0] || '').split('=')
+const port = portNum ? Number(portNum) : 8000;
 
 const OPENAI_KEY = Deno.env.get('OPENAI_KEY') ?? '';
 const EMBEDDING_MODEL = 'text-embedding-ada-002';
 const CHAT_MODEL = 'gpt-3.5-turbo';
+const NO_RESULTS_MESSAGE = `
+  Sorry but I couln't find anything related to what you asked in the podcast content
+`;
 
 serve(async (req) => {
   // Handle CORS
+  if (!validOrigin(req)) {
+    return response({ message: 'Cannot process this request' }, 403);
+  }
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -49,7 +59,7 @@ serve(async (req) => {
   }
 
   if (!matchedResults.length) {
-    const choices = [{ delta: { content: `Sorry but I couldn't find anything related to what you asked` } }];
+    const choices = [{ delta: { content: NO_RESULTS_MESSAGE } }];
     return response({ choices });
   }
   const links = matchedResults.map(({ link, seconds }) => `${link}&t=${seconds}s`);
@@ -106,4 +116,4 @@ serve(async (req) => {
 
   const mergedStreams = zipReadableStreams(chatCompletion.body, episodesStream);
   return new Response(mergedStreams, { headers: streamHeaders });
-});
+}, { port });

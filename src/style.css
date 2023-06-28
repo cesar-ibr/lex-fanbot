@@ -7,6 +7,10 @@ body {
   background-color: #111;
 }
 
+#app {
+  overflow: hidden;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
