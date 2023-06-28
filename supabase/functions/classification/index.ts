@@ -5,6 +5,7 @@ import { corsHeaders, classificationPrompt, response, userQuery, validOrigin } f
 
 const OPENAI_KEY = Deno.env.get('OPENAI_KEY') ?? '';
 const OPENAI_MODEL = 'text-curie-001';
+const LOG_TABLE = Deno.env.get('LOG_TABLE') ?? '';
 
 const [, portNum] = (Deno.args[0] || '').split('='); // checks arg --port=5678
 const port = portNum ? Number(portNum) : 8000;
@@ -49,7 +50,7 @@ serve(async (req) => {
     console.log('\n[Classification] =>', classification);
 
     // log results
-    await supabaseClient.from('query_logs').insert({ classification, prompt: query });
+    await supabaseClient.from(LOG_TABLE).insert({ classification, prompt: query });
 
     return response({ classification });
   } catch (error) {

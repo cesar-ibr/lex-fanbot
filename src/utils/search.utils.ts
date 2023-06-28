@@ -1,5 +1,6 @@
 import mockCompletion from '../assets/mock-completion.json';
 import { CLASSIFICATION_ENDPOINT } from '../utils/constants';
+import { SB_TOKEN } from './constants';
 
 export interface CompletionResponse {
   choices?: {
@@ -26,11 +27,14 @@ export interface FetchCompletionParams {
   onCompletion: OnCompeltionFn;
 }
 
+const headers = {
+  'Authorization': `Bearer ${SB_TOKEN}`,
+  'Content-Type': 'application/json'
+};
+
 export const getPromptClassification = async (query = '') => {
   const res = await fetch(CLASSIFICATION_ENDPOINT, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     method: 'POST',
     body: JSON.stringify({ query }),
   });
@@ -43,9 +47,7 @@ export const getPromptClassification = async (query = '') => {
 
 export const fetchChatCompletion = async ({ url, query, onCompletion }: FetchCompletionParams) => {
   const response = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     method: 'POST',
     body: JSON.stringify({ query }),
   });
