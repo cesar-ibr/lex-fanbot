@@ -2,7 +2,7 @@ import { format } from 'https://deno.land/std@0.192.0/datetime/mod.ts';
 import { stripIndents, oneLine } from 'https://esm.sh/common-tags@1.8.2';
 
 const IS_PROD = Deno.env.get('PROD') === 'true';
-const PROD_DOMAIN = Deno.env.get('PROD_DOMAIN');
+const PROD_DOMAIN = Deno.env.get('PROD_DOMAIN') ?? ''; // comma separated domains
 
 /**
  * Promts and Instructions
@@ -51,7 +51,7 @@ export const semanticSearchInstructions = stripIndents`
 `;
 
 export const queryPodcastInstructions = stripIndents`
-  You are a helpful assistant. Answer only using information from the chat.
+  You are a search assistant for the Lex Fridman Podcast. Answer only using information from the chat.
   If you're not sure about an answer say "Hmmm I'm not sure how to answer that".
   Only respond with the relevant episodes information the user asks. Do not respond with the full episodes information.
   Today is ${format(new Date(), 'yyyy-MM-dd')}.
@@ -70,11 +70,15 @@ export const userQuery = async (req: Request) => {
 };
 
 export const validOrigin = (req: Request) => {
-  const origin = req.headers.get('origin');
-  if (IS_PROD && origin !== PROD_DOMAIN) {
-    return false;
+  const domains = PROD_DOMAIN.split(',');
+  const origin = req.headers.get('origin') || '????';
+  if (!IS_PROD) {
+    return true; // for local dev
   }
-  return true;
+  if (domains.includes(origin)) {
+    return true;
+  }
+  return false;
 };
 
 /**
@@ -82,7 +86,7 @@ export const validOrigin = (req: Request) => {
  */
 
 export const corsHeaders = {
-  'Access-Control-Allow-Origin': `${IS_PROD ? PROD_DOMAIN : '*'}`,
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers':
     'authorization, x-client-info, apikey, content-type',
   'Content-Type': 'application/json',
