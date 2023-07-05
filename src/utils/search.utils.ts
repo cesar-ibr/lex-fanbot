@@ -1,6 +1,5 @@
 import mockCompletion from '../assets/mock-completion.json';
 import { CLASSIFICATION_ENDPOINT } from '../utils/constants';
-import { SB_TOKEN } from './constants';
 
 export interface CompletionResponse {
   choices?: {
@@ -28,7 +27,6 @@ export interface FetchCompletionParams {
 }
 
 const headers = {
-  'Authorization': `Bearer ${SB_TOKEN}`,
   'Content-Type': 'application/json'
 };
 
