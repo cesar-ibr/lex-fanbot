@@ -1,11 +1,10 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { Configuration, OpenAIApi } from 'https://esm.sh/openai@3.3.0';
 import { supabaseClient } from '../_shared/supabase-client.ts';
-import { corsHeaders, classificationPrompt, response, userQuery, validOrigin } from '../_shared/utils.ts';
+import { corsHeaders, getPrompt, response, userQuery, validOrigin } from '../_shared/utils.ts';
 
 const OPENAI_KEY = Deno.env.get('OPENAI_KEY') ?? '';
 const OPENAI_MODEL = 'text-curie-001';
-const LOG_TABLE = Deno.env.get('LOG_TABLE') ?? '';
 
 const [, portNum] = (Deno.args[0] || '').split('='); // checks arg --port=5678
 const port = portNum ? Number(portNum) : 8000;
@@ -34,9 +33,9 @@ serve(async (req) => {
       return response({ message: 'Cannot process this request' }, 400);
     }
 
-    const prompt = classificationPrompt(query);
-    console.log('[Query] =>', query);
-
+    let prompt = await getPrompt(supabaseClient, 'classification');
+    prompt = prompt?.replace('{{}}', query);
+    
     // TODO: Implement moderation endpoint for OpenAI compliance
     const classificationResponse = await openai.createCompletion({
       model: OPENAI_MODEL,
@@ -44,13 +43,11 @@ serve(async (req) => {
       temperature: 0,
       prompt,
     });
-
+    
     const { choices: [{ text }] } = classificationResponse.data;
     const classification = (text ?? '').trim().toUpperCase();
-    console.log('\n[Classification] =>', classification);
 
-    // log results
-    await supabaseClient.from(LOG_TABLE).insert({ classification, prompt: query });
+    console.log('[RESULTS] =>', { query, classification });
 
     return response({ classification });
   } catch (error) {

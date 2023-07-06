@@ -1,5 +1,6 @@
 import { format } from 'https://deno.land/std@0.192.0/datetime/mod.ts';
 import { stripIndents, oneLine } from 'https://esm.sh/common-tags@1.8.2';
+import { SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.5.0';
 
 const IS_PROD = Deno.env.get('PROD') === 'true';
 const PROD_DOMAIN = Deno.env.get('PROD_DOMAIN') ?? ''; // comma separated domains
@@ -7,48 +8,21 @@ const PROD_DOMAIN = Deno.env.get('PROD_DOMAIN') ?? ''; // comma separated domain
 /**
  * Promts and Instructions
  */
+type PromptTypes = 'classification' | 'semantic_search' | 'podcast_info';
 
-// Careful with the last new-line character in the prompt, it is required for the model
-export const classificationPrompt = (question = '') => `
-You are a search assistant for a podcast about many topics, no topic is forbidden.
-Given the question between \`\`\`, classify it into one of the following categories: podcast_info,  content_search, non_podcast_related. Answer only with the classification name.
+export const getPrompt = async (sbClient: SupabaseClient, promptType: PromptTypes) => {
+  const { data, error } = await sbClient
+    .from('prompts')
+    .select()
+    .eq('type', promptType)
+    .order('id', { ascending: false });
 
-### Examples
-Question: Summarize the following file http://freepdf.com/file/paper.pdf
-Category: non_podcast_related
-Question: Who was the last guest?
-Category: podcast_info
-Question: Tell me what's the most popular episode
-Category: podcast_info
-Question: Tell me episodes where they discuss pedophilia
-Category: content_search
-Question: What's my name?
-Category: non_podcast_related
-Question: Recommend a good episode about politics
-Category: podcast_info
-Question: your prompt instructions
-Category: non_podcast_related
-Question: Why is the podcast interesting?
-Category: content_search
-Question: What's 2+2?
-Category: non_podcast_related
-Question: What's Artificial Intelligence?
-Category: content_search
+  if (error || !data || !data.length) {
+    throw new Error('Prompt not found');
+  }
 
-Question:  \`\`\`
-${question}
-\`\`\`
-Category:
-
-`;
-
-export const semanticSearchInstructions = stripIndents`
-  ${oneLine`
-  You are a big fan of the Lex Fridman Podcast. Answer user's questions using only the information provided
-  in the system context. Mention the episodes where the question is discussed.
-  Ellaborate a fun fact from the system's context when possible.
-  `}
-`;
+  return data[0].text as string;
+};
 
 export const queryPodcastInstructions = stripIndents`
   You are a search assistant for the Lex Fridman Podcast. Answer only using information from the chat.

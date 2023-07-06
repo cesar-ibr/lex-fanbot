@@ -1,7 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'https://esm.sh/openai@3.3.0';
 import GPT3Tokenizer from 'https://esm.sh/gpt3-tokenizer@1.1.5';
-import { corsHeaders, semanticSearchInstructions, response, streamHeaders, fetchChatCompletion, validOrigin } from '../_shared/utils.ts';
+import { corsHeaders, getPrompt, response, streamHeaders, fetchChatCompletion, validOrigin } from '../_shared/utils.ts';
 import { zipReadableStreams } from 'https://deno.land/std@0.192.0/streams/mod.ts';
 import { supabaseClient } from '../_shared/supabase-client.ts';
 
@@ -49,7 +49,7 @@ serve(async (req) => {
   // In production we should handle possible errors
   const { error: fnError, data: matchedResults } = await supabaseClient.rpc('get_similarity', {
     query_embedding: embedding,
-    match_threshold: 0.78, // TODO: Test with other tresholds
+    match_threshold: 0.80, // TODO: Test with other tresholds
     match_count: 4, // Number of matches
   });
 
@@ -63,21 +63,21 @@ serve(async (req) => {
     return response({ choices });
   }
   const links = matchedResults.map(({ link, seconds }) => `${link}&t=${seconds}s`);
-  // console.log('[Episodes] =>', links);
+  const prompt = await getPrompt(supabaseClient, 'semantic_search');
 
   // Prepare Prompt
   const chatMessages: ChatCompletionRequestMessage[] = [
-    { role: 'system', content: semanticSearchInstructions },
+    { role: 'system', content: prompt },
     { role: 'user', content: input },
   ];
   const tokenizer = new GPT3Tokenizer({ type: 'gpt3' });
   let tokenCount = 0, podcastCtx = '';
 
   // Concat matched captions
-  for (const { captions = '', guest = '', episode = '', similarity } of matchedResults) {
+  for (const { captions = '', guest = '', episode = '' } of matchedResults) {
     const encoded = tokenizer.encode(captions);
     tokenCount += encoded.text.length;
-    console.log(`Ep ${episode} - Similarity: ${similarity} - Tokens: ${encoded.text.length}`);
+    // console.log(`Ep ${episode} - Similarity: ${similarity} - Tokens: ${encoded.text.length}`);
 
     // Limit context to max 1500 tokens
     if (tokenCount > 1500) {
@@ -90,8 +90,8 @@ serve(async (req) => {
     role: 'system',
     content: `Podcast Context: \`\`\`\n${podcastCtx}\n\`\`\``
   });
-
-  console.log('[SYSTEM] => Generating chat completion...');
+  const matched_eps = matchedResults.map((e) => `#${e.episode}: ${e.similarity}`).join('---');
+  console.log('[RESULTS] => ', { query, matched_eps });
 
   const chatCompletion = await fetchChatCompletion(OPENAI_KEY, {
     model: CHAT_MODEL,
