@@ -9,10 +9,9 @@
     html,
     body {
       font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-      height: 100vh;
       background-color: #111;
       color: #FFF;
-      padding: 15px;
+      padding: 15px 30px;
     }
 
     ul {
@@ -26,7 +25,19 @@
 </head>
 
 <body>
-  <h1 id="Limitations">Lex Fanbot Limitations</h1>
+  <h1>About the project</h1>
+  <p>
+    This is an <a href="https://github.com/cesar-ibr/lex-fanbot">open source</a> initiative
+    that I started by my own because I'm a big fan of the podcast.
+    I don't work for the Lex Fridman Podcast and this runs on my own resources.
+    If you find a bug or problem let me know by
+    <a href="https://github.com/cesar-ibr/lex-fanbot/issues">opening an issue</a>
+    in the project. <br>
+    If you want to get in touch message me on <a href="https://www.linkedin.com/in/cesarsanchezi/">LinkedIn</a>
+    or send me an <a href="mailto:cesar@wepragma.com">email</a>.
+  </p>
+  <hr>
+  <h1 id="Limitations">Limitations</h1>
   <p>
     The fanbot has access to all transcripts available of the podcast.
     However there are some episodes for which the list of transcripts are not available.
@@ -80,24 +91,14 @@
     "Recommdend episodes about life".
   </p>
   <hr>
-  <h1>About the project</h1>
-  <p>
-    This is an <a href="https://github.com/cesar-ibr/lex-fanbot">Open Source initiative</a>
-    that I started by my own because I'm a big fan of the podcast.
-    I don't work for the Lex Fridman Podcast and this runs with personal resources.
-    If you find a bug or problem let me know by
-    <a href="https://github.com/cesar-ibr/lex-fanbot/issues">opening an issue</a>
-    in the project.
-  </p>
-  <h1>Data Analytics</h1>
+  <h1>Analytics</h1>
   <p>
     Google Analytics is in place just to know how people use the fanbot.
-    Additionaly you can see that
-    <a
-      href="https://github.com/cesar-ibr/lex-fanbot/blob/c631ddea94ea187efb441a6d293ef5848c50aec1/supabase/functions/classification/index.ts#L52">
-      prompts get stored
-    </a> with the intention to improve the classification
-    of the queries and make the fanbot smarter.
+    Prompts are also analyzed to test the quality of the fanbot response, specially the
+    <a href="https://github.com/cesar-ibr/lex-fanbot/blob/main/supabase/functions/classification/index.ts"
+      target="_blank">
+      query classification
+    </a> that could be improved.
   </p>
 </body>
 
