@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://lexfanbot.netlify.app/fanbot.png" width="300"/>
+  <img src="./public/fanbot.png" width="300"/>
 </p>
 
 ### The Lex Fanbot
@@ -10,4 +10,4 @@ You can try it [here](https://lexfanbot.netlify.app/) and chek the [about page](
 
 #### Quick Demo
 
-![Demo Fanbot](https://lexfanbot.netlify.app/demo-fanbot.gif "searching about democracy")
+![Demo Fanbot](./public/demo-fanbot.gif "searching about democracy")
